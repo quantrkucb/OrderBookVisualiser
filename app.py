@@ -172,5 +172,3 @@ def update_orderbook(n_clicks, side, price, qty):
     trade_messages = "<br>".join(orders['messages'])
     return bid_df.to_dict("records"), ask_df.to_dict("records"), mid_price_display, trade_messages
 
-if __name__ == "__main__":
-    app.run_server(debug=True)
