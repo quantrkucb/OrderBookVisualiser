@@ -103,11 +103,36 @@ This is a visualiser for a simple custom-made order book. It matches according t
 There is no FIFO element as each order is added once at a time by the user (you). Any trades (crosses in the order book) that occur will be printed below.
 """)
 
-st.subheader("Trade Logs:")
 # Display trade messages
 col1_, col2_ = st.columns(2)
 with col1_:
+    st.subheader("Trade Logs:")
     trade_messages = st.empty()  # Placeholder for trade messages
+
+orders = order_book.get_orders()
+with col2_:
+    st.subheader("Orderbook Statistics:")
+    if orders['bids'] and orders['asks']:
+        best_bid = orders['bids'][0][0]  # Best bid price
+        best_ask = orders['asks'][0][0]  # Best ask price
+        mid_price = (best_bid + best_ask) / 2
+    else:
+        mid_price = None
+
+    weighted_mid_price = (best_bid * orders['asks'][0][1] + best_ask*orders['bids'][0][1])/(orders['bids'][0][1] + orders['asks'][0][1])
+    buying_pressure = orders['bids'][0][1] / (orders['bids'][0][1] + orders['asks'][0][1])
+    selling_pressue = orders['asks'][0][1] / (orders['bids'][0][1] + orders['asks'][0][1])
+    statistics_data = {
+        "Statistic": ["Mid Price", "Weighted Mid Price", "Buying Pressure", "Selling Pressure"],
+        "Value": [mid_price, weighted_mid_price, buying_pressure, selling_pressue]
+    }
+    statistics_df = pd.DataFrame(statistics_data)
+
+    # Display the statistics DataFrame
+    st.dataframe(statistics_df, hide_index=True)
+
+
+
 
 
 st.write("")
